@@ -8,15 +8,19 @@
 import SwiftUI
 
 struct ContentView: View {
+    let audioManager = AudioManager()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Text("Hello, World!")
+        .onAppear {
+            audioManager.requestPermission {
+                audioManager.setupAudioSession()
+                audioManager.testAudio()
+            }
         }
-        .padding()
-    }
+        
+        
+            }
 }
 
 #Preview {
