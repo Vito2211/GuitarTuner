@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    let audioManager = AudioManager()
+    @StateObject private var audioManager = AudioManager()
     
     var body: some View {
         Text("Hello, World!")
