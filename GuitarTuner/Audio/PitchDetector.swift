@@ -9,6 +9,8 @@ import Foundation
 
 final class PitchDetector{
     
+    private let noteConverter = NoteConverter()
+    
     func detect(samples: UnsafePointer<Float>, count: Int) {
         var sum: Float = 0
         
@@ -63,11 +65,14 @@ final class PitchDetector{
         }
         
         
+        let frequency = 44100.0 / Double(bestDelay)
         
         
+        //print("Frequency:", frequency, "Hz")
+        //print(bestDelay)
         
-        print("Frequency:", (44100.0 / Double(bestDelay)), "Hz")
-        print(bestDelay)
+        noteConverter.convert(frequency: frequency)
+        
         
     }
     
