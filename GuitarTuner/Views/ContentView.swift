@@ -17,7 +17,7 @@ struct ContentView: View {
     @State private var currentCents = 0.0
     
     @AppStorage("instrument") private var savedInstrument = "Guitar"
-    @State private var selectedInstrument = guitar
+    @State private var selectedInstrument = guitarStandard
     
     @State private var showSettings = false
     

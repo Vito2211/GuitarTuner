@@ -7,6 +7,8 @@
 
 
 let instruments: [Instrument] = [
-    guitar,
-    ukulele
+    guitarStandard,
+    //guitarDropD,
+    ukuleleStandard,
+    bassStandard
 ]

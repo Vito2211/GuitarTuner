@@ -13,15 +13,18 @@ struct Note: Hashable {
 }
 
 struct Instrument: Identifiable {
-    let id = UUID()
+    let id: String
     let name: String
+    let tuning: String
     let icon: String
     let strings: [Note]
 }
 
 
-let guitar = Instrument(
+let guitarStandard = Instrument(
+    id: "guitar_standard",
     name: "Guitar",
+    tuning: "Standard",
     icon: "guitars",
     strings: [
         Note(name: "E", octave: 4),
@@ -33,8 +36,10 @@ let guitar = Instrument(
     ]
 )
 
-let ukulele = Instrument(
+let ukuleleStandard = Instrument(
+    id: "ukulele_standard",
     name: "Ukulele",
+    tuning: "Standard",
     icon: "guitars",
     strings: [
         Note(name: "A", octave: 4),
@@ -44,3 +49,45 @@ let ukulele = Instrument(
     ]
 )
 
+let bassStandard = Instrument(
+    id: "bass_standard",
+    name: "Bass",
+    tuning: "Standard",
+    icon: "guitars",
+    strings: [
+        Note(name: "E", octave: 2),
+        Note(name: "A", octave: 2),
+        Note(name: "D", octave: 1),
+        Note(name: "G", octave: 1)
+    ]
+)
+
+let guitarDropD = Instrument(
+    id: "guitar_drop_d",
+    name: "Guitar",
+    tuning: "Drop D",
+    icon: "guitars",
+    strings: [
+        Note(name: "E", octave: 4),
+        Note(name: "B", octave: 3),
+        Note(name: "G", octave: 3),
+        Note(name: "D", octave: 3),
+        Note(name: "A", octave: 2),
+        Note(name: "D", octave: 2)
+    ]
+)
+
+let guitarOpenG = Instrument(
+    id: "guitar_open_g",
+    name: "Guitar",
+    tuning: "Open G",
+    icon: "guitars",
+    strings: [
+        Note(name: "D", octave: 4),
+        Note(name: "B", octave: 3),
+        Note(name: "G", octave: 3),
+        Note(name: "D", octave: 3),
+        Note(name: "A", octave: 2),
+        Note(name: "D", octave: 2)
+    ]
+)

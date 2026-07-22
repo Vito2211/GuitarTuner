@@ -32,9 +32,15 @@ struct InstrumentPickerView: View {
 
                                 VStack(alignment: .leading, spacing: 6) {
 
-                                    Text(instrument.name)
-                                        .font(.title3.bold())
+                                    HStack(spacing: 2) {
+                                        Text(instrument.name)
+                                            .font(.title3.bold())
 
+                                        Text(instrument.tuning)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                            .offset(x: 20)
+                                    }
                                     HStack(spacing: 6) {
                                         ForEach(instrument.strings, id: \.self) { string in
 
