@@ -16,9 +16,11 @@ struct ContentView: View {
     @State private var currentNote = "-"
     @State private var currentCents = 0.0
     
+    @AppStorage("instrument") private var savedInstrument = "Guitar"
     @State private var selectedInstrument = guitar
     
     @State private var showSettings = false
+    
     @AppStorage("theme") private var theme = AppTheme.system.rawValue
     @AppStorage("referencePitch") private var referencePitch = 440.0
     
@@ -69,6 +71,12 @@ struct ContentView: View {
         )
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: showSettings)
         .onAppear {
+                if let instrument = instruments.first(where: {
+                    $0.name == savedInstrument
+                }) {
+                    selectedInstrument = instrument
+                }
+            
                 audioManager.referencePitch = referencePitch
                 
                 audioManager.onNoteDetected = { result in
@@ -81,6 +89,9 @@ struct ContentView: View {
                     audioManager.setupAudioSession()
                     audioManager.testAudio()
                 }
+        }
+        .onChange(of: selectedInstrument.name) { _, newValue in
+            savedInstrument = newValue
         }
         .onChange(of: referencePitch) { _, newValue in
             audioManager.referencePitch = newValue
