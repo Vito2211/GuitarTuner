@@ -9,7 +9,14 @@ import Foundation
 
 final class PitchDetector{
     
-    private let noteConverter = NoteConverter()
+    let noteConverter = NoteConverter()
+    var onNoteDetected: ((NoteResult) -> Void)?
+    
+    var referencePitch: Double = 440.0 {
+        didSet {
+            noteConverter.referencePitch = referencePitch
+        }
+    }
     
     func detect(samples: UnsafePointer<Float>, count: Int) {
         var sum: Float = 0
@@ -34,7 +41,7 @@ final class PitchDetector{
     func convertToHz(rms: Float, samples: UnsafePointer<Float>, count: Int) {
         
         if rms < 0.002 {
-            print("Слишком тихо")
+            print("___")
             return
         }
         
@@ -71,7 +78,9 @@ final class PitchDetector{
         //print("Frequency:", frequency, "Hz")
         //print(bestDelay)
         
-        noteConverter.convert(frequency: frequency)
+        let result = noteConverter.convert(frequency: frequency)
+
+        onNoteDetected?(result)
         
         
     }

@@ -10,6 +10,19 @@ import Combine
 final class AudioManager: ObservableObject {
     let engine = AVAudioEngine()
     private let detector = PitchDetector()
+    var onNoteDetected: ((NoteResult) -> Void)?
+    
+    var referencePitch: Double = 440.0 {
+        didSet {
+            detector.referencePitch = referencePitch
+        }
+    }
+    
+    init() {
+        detector.onNoteDetected = { [weak self] result in
+            self?.onNoteDetected?(result)
+        }
+    }
     
     
     func requestPermission(completion: @escaping () -> Void) {

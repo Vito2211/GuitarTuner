@@ -1,5 +1,5 @@
 //
-//  Note.swift
+//  NoteConvetor.swift
 //  GuitarTuner
 //
 //  Created by  Viktor Pavliuk on 12.07.2026.
@@ -7,10 +7,18 @@
 
 import Foundation
 
-final class NoteConverter { 
+struct NoteResult {
+    let octave: Int
+    let note: String
+    let cents: Double
+}
+
+final class NoteConverter {
     
-    func convert(frequency: Double) {
-        let A4 = 440.0
+    var referencePitch: Double = 440.0
+    
+    func convert(frequency: Double) -> NoteResult {
+        let A4 = referencePitch
         
         let midi = Int(round(69 + 12 * log2(frequency / A4)))
         let notes = [
@@ -32,21 +40,21 @@ final class NoteConverter {
 
         let octave = midi / 12 - 1
         
-        print("\(notes[noteIndex])\(octave)")
+        let noteName = notes[noteIndex]
         
-        detectCenc(midi: midi, frequency: frequency)
-        
-    }
-    
-    func detectCenc(midi: Int, frequency: Double) {
-        
-        let perfectFrequency = 440.0 * pow(2.0, Double(midi - 69) / 12.0)
+        let perfectFrequency = A4 * pow(2.0, Double(midi - 69) / 12.0)
         
         let cents = 1200 * log2(frequency / perfectFrequency)
         print("Cents:", cents)
-
+        
+        return NoteResult(
+            octave: octave,
+            note: noteName,
+            cents: cents
+        )
         
     }
     
+
     
 }

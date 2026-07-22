@@ -10,17 +10,85 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var audioManager = AudioManager()
     
+    
+    
+    @State private var currentOctave = "-"
+    @State private var currentNote = "-"
+    @State private var currentCents = 0.0
+    
+    @State private var selectedInstrument = guitar
+    
+    @State private var showSettings = false
+    @AppStorage("theme") private var theme = AppTheme.system.rawValue
+    @AppStorage("referencePitch") private var referencePitch = 440.0
+    
+    
+    
     var body: some View {
-        Text("Hello, World!")
-        .onAppear {
-            audioManager.requestPermission {
-                audioManager.setupAudioSession()
-                audioManager.testAudio()
+        ZStack {
+            Color("Background")
+                .ignoresSafeArea()
+            VStack(spacing: 0) {
+                ZStack(alignment: .top) {
+                    NoteView(
+                        note: currentNote,
+                        octave: currentOctave,
+                        cents: Int(currentCents)
+                    )
+                    TopBarView(
+                        selectedInstrument: $selectedInstrument,
+                        showSettings: $showSettings
+                    )
+                        .padding(.top, 10)
+                        .zIndex(1)
+                    Spacer()
+                        .frame(height: 20)
+                    CentsView(cents: currentCents)
+                        .offset(y: 20)
+                    Spacer()
+                }
+                TunerScaleView(cents: currentCents)
+                    .padding(.top, -35)
+                Spacer()
+                StringsView(instrument: selectedInstrument)
+            }
+            if showSettings {
+                SettingsView(
+                    showSettings: $showSettings,
+                    theme: $theme,
+                    referencePitch: $referencePitch
+                )
+                    .transition(.move(edge: .trailing))
+                    .zIndex(2)
             }
         }
+        .preferredColorScheme(
+            theme == "Dark" ? .dark :
+            theme == "Light" ? .light :
+            nil
+        )
+        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: showSettings)
+        .onAppear {
+                audioManager.referencePitch = referencePitch
+                
+                audioManager.onNoteDetected = { result in
+                    currentOctave = String(result.octave)
+                    currentNote = result.note
+                    currentCents = result.cents
+                    
+                }
+                audioManager.requestPermission {
+                    audioManager.setupAudioSession()
+                    audioManager.testAudio()
+                }
+        }
+        .onChange(of: referencePitch) { _, newValue in
+            audioManager.referencePitch = newValue
+        }
+
         
         
-            }
+    }
 }
 
 #Preview {
