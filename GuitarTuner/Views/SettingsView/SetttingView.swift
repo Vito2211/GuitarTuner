@@ -13,6 +13,7 @@ struct SettingsView: View {
     @Binding var theme: String
     @Binding var referencePitch: Double
     @State private var showCredits = false
+    @State private var showDonats = false
     @Environment(\.openURL) private var openURL
     
     var body: some View {
@@ -61,7 +62,9 @@ struct SettingsView: View {
                                 ) {
                                     openURL(URL(string: "https://github.com/Vito2211/GuitarTuner")!)
                                 }
-                                SettingsRow(title: "Donate", icon: "heart") {}
+                                SettingsRow(title: "Donate", icon: "heart") {
+                                    showDonats = true
+                                }
                                 SettingsRow(title: "Privacy Policy", icon: "hand.raised") {
                                     openURL(URL(string: "https://Vito2211.github.io/GuitarTuner/")!)
                                 }
@@ -79,6 +82,9 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $showCredits) {
             CreditsView()
+        }
+        .sheet(isPresented: $showDonats) {
+            DonateView()
         }
     }
 }

@@ -15,6 +15,8 @@ struct StringsView: View {
         GeometryReader { geometry in
             
             let width = geometry.size.width
+            let height = geometry.size.height
+
             
             ZStack {
                     RoundedRectangle(cornerRadius: 14)
@@ -29,14 +31,26 @@ struct StringsView: View {
                         .modifier(GlassModifier(cornerRadius: 14))
                     VStack(spacing: 0) {
                         Spacer()
+                        if height >= 300 {Spacer()}
                             ForEach(instrument.strings, id: \.self) { string in
                                 StringRowView(note: string,
                                               width: width * 0.9
                                 )
                                 if string != instrument.strings.last {
                                     Spacer()
+                                    if height >= 300 {
+                                        Spacer()
+                                        Spacer()
+                                        Spacer()
+                                    } else if height >= 350 {
+                                        Spacer()
+                                        Spacer()
+                                        Spacer()
+                                        Spacer()
+                                    }
                                 }
                             }
+                        if height >= 300 {Spacer()}
                         Spacer()
                         }
                         .padding(.vertical)

@@ -27,41 +27,56 @@ struct ContentView: View {
     
     
     var body: some View {
-        ZStack {
-            Color("Background")
-                .ignoresSafeArea()
-            VStack(spacing: 0) {
-                ZStack(alignment: .top) {
-                    NoteView(
-                        note: currentNote,
-                        octave: currentOctave,
-                        cents: Int(currentCents)
-                    )
-                    TopBarView(
-                        selectedInstrument: $selectedInstrument,
-                        showSettings: $showSettings
-                    )
+        GeometryReader { geo in
+            
+            let is13InchIPad: Bool = geo.size.width > 1000
+            
+            let stringsHeightRatio: CGFloat = is13InchIPad ? 0.43 : 0.30
+            
+            ZStack {
+                Color("Background")
+                    .ignoresSafeArea()
+
+                VStack(spacing: 0) {
+                    ZStack(alignment: .top) {
+                        NoteView(
+                            note: currentNote,
+                            octave: currentOctave,
+                            cents: Int(currentCents)
+                        )
+                        TopBarView(
+                            selectedInstrument: $selectedInstrument,
+                            showSettings: $showSettings
+                        )
                         .padding(.top, 10)
                         .zIndex(1)
-                    Spacer()
-                        .frame(height: 20)
-                    CentsView(cents: currentCents)
-                        .offset(y: 20)
-                    Spacer()
+                        
+                        CentsView(cents: currentCents)
+                            .offset(y: 0)
+                    }
+                    .frame(height: geo.size.height * 0.40)
+
+                    TunerScaleView(cents: currentCents)
+                        
+
+                    Spacer(minLength: 15)
+
+                    StringsView(instrument: selectedInstrument)
+                        .frame(height: geo.size.height * stringsHeightRatio)
+
+                    Spacer(minLength: 6)
                 }
-                TunerScaleView(cents: currentCents)
-                    .padding(.top, -35)
-                Spacer()
-                StringsView(instrument: selectedInstrument)
-            }
-            if showSettings {
-                SettingsView(
-                    showSettings: $showSettings,
-                    theme: $theme,
-                    referencePitch: $referencePitch
-                )
+                .frame(width: geo.size.width, height: geo.size.height)
+
+                if showSettings {
+                    SettingsView(
+                        showSettings: $showSettings,
+                        theme: $theme,
+                        referencePitch: $referencePitch
+                    )
                     .transition(.move(edge: .trailing))
                     .zIndex(2)
+                }
             }
         }
         .preferredColorScheme(
@@ -71,24 +86,23 @@ struct ContentView: View {
         )
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: showSettings)
         .onAppear {
-                if let instrument = instruments.first(where: {
-                    $0.name == savedInstrument
-                }) {
-                    selectedInstrument = instrument
-                }
-            
-                audioManager.referencePitch = referencePitch
-                
-                audioManager.onNoteDetected = { result in
-                    currentOctave = String(result.octave)
-                    currentNote = result.note
-                    currentCents = result.cents
-                    
-                }
-                audioManager.requestPermission {
-                    audioManager.setupAudioSession()
-                    audioManager.testAudio()
-                }
+            if let instrument = instruments.first(where: {
+                $0.name == savedInstrument
+            }) {
+                selectedInstrument = instrument
+            }
+
+            audioManager.referencePitch = referencePitch
+
+            audioManager.onNoteDetected = { result in
+                currentOctave = String(result.octave)
+                currentNote = result.note
+                currentCents = result.cents
+            }
+            audioManager.requestPermission {
+                audioManager.setupAudioSession()
+                audioManager.testAudio()
+            }
         }
         .onChange(of: selectedInstrument.name) { _, newValue in
             savedInstrument = newValue
@@ -96,11 +110,7 @@ struct ContentView: View {
         .onChange(of: referencePitch) { _, newValue in
             audioManager.referencePitch = newValue
         }
-
-        
-        
-    }
-}
+    }}
 
 #Preview {
     ContentView()

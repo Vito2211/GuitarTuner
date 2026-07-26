@@ -9,10 +9,37 @@
 
 import SwiftUI
 
+//
+//  StringRowView.swift
+//  GuitarTuner
+//
+//  Created by  Viktor Pavliuk on 20.07.2026.
+//
+
+import SwiftUI
+
 struct StringRowView: View {
 
     let note: Note
     let width: CGFloat
+
+    private var isPad: Bool {
+        width > 500
+    }
+    
+    private var isLargePad: Bool {
+        width > 900
+    }
+    
+    private var circleSize: CGFloat {
+        let cap: CGFloat = isLargePad ? 85 : 70
+        return min(width / 8, cap)
+    }
+
+    private var lineWidth: CGFloat {
+        let divisor: CGFloat = isPad ? 4.2 : 3.6
+        return width - (width / divisor)
+    }
 
     var body: some View {
 
@@ -33,32 +60,29 @@ struct StringRowView: View {
 
                 HStack(alignment: .bottom, spacing: 1) {
                     Text(note.name)
-                        .font(.title3.bold())
+                        .font(.system(size: width * 0.045, weight: .bold))
 
                     Text("\(note.octave)")
-                        .font(.caption)
+                        .font(.system(size: width * 0.045, weight: .bold))
                         .offset(y: 5)
                 }
                 .foregroundStyle(Color("SecondBackground"))
             }
-            .frame(
-                width: width / 8,
-                height: width / 8
-            )
+            .frame(width: circleSize, height: circleSize)
             .offset(x: (width / 25))
 
             Spacer()
-            
+
             Rectangle()
-                .frame(width: (width-(width/3.6)), height: (width/40))
+                .frame(width: lineWidth, height: (width/40))
                 .foregroundStyle(Color("Scale"))
-                
 
             Circle()
                 .fill(Color("Scale"))
                 .frame(width: (width/15), height: (width/15))
                 .offset(x: -(width/20))
         }
+        .frame(width: width)
         .padding(.horizontal, 20)
         .frame(height: 45)
     }
